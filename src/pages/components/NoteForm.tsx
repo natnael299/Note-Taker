@@ -1,6 +1,6 @@
 import { Form, Stack, Row, Col, Button } from "react-bootstrap"
 import CreateableReactSelect from "react-select/creatable"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import React, { useRef, useState } from "react"
 import type { NoteData, Tag } from "../../App"
 
@@ -14,6 +14,7 @@ function NoteForm({ onSubmit, addTag, Tags }: NoteFormProps) {
   const bodyRef = useRef<HTMLTextAreaElement>(null);
   const [selectedTags, SetSelectedTags] = useState<Tag[]>([])
 
+  const navigate = useNavigate();
   //saves the newly added note
   const saveNewNote = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -24,7 +25,8 @@ function NoteForm({ onSubmit, addTag, Tags }: NoteFormProps) {
       tagIds: selectedTags.map(t => t.id)
     };
 
-    onSubmit(data);
+    onSubmit(data)
+    navigate("/");
   };
   return (
     <Form onSubmit={saveNewNote}>

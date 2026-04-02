@@ -4,7 +4,7 @@ import NewNote from "./pages/NewNote"
 import { Container } from "react-bootstrap"
 import { useLocalStorage } from "./utils"
 import { useMemo } from "react"
-
+import NoteDetail from "./pages/NoteDetail"
 //type for a single note object
 export type NoteData = {
   id: string,
@@ -18,6 +18,8 @@ export type Tag = {
   id: string,
   label: string
 };
+
+export type DetailedNoteData = { tags: Tag[] } & NoteData
 
 function App() {
   const [Notes, setNotes] = useLocalStorage<NoteData[]>("notess", []);
@@ -42,16 +44,16 @@ function App() {
   return (
     <Container className="my-4">
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home notes={notesWT} Tags={Tags} />} />
         {/* leads a wrongly written path to the home page */}
         <Route path="*" element={<Navigate to="/" />} />
         <Route path="/new" element={<NewNote onSubmit={onCreateNote} addTag={addTag} Tags={Tags} />} />
         <Route path="/:id">
-          <Route index element={<h1>Edit</h1>} />
+          <Route index element={<NoteDetail />} />
           <Route path="delete" element={<h1>Delete</h1>} />
         </Route>
       </Routes>
-    </Container>
+    </Container >
   )
 }
 

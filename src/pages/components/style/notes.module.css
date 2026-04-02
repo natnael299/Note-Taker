@@ -1,0 +1,10 @@
+.noteCard {
+  transition: translate ease-in 0.25s, box-shadow ease-in-out 0.25s;
+}
+
+.noteCard:hover,
+.noteCard:focus {
+  box-shadow: 0 5px 5px 0 #252525;
+  translate: 0 -5px;
+  /* lifts the element up 5px (x, y)*/
+}
