@@ -8,12 +8,12 @@ type NoteFormProps = {
   onSubmit: (data: NoteData) => void
   addTag: (data: Tag) => void
   Tags: Tag[]
-};
-function NoteForm({ onSubmit, addTag, Tags }: NoteFormProps) {
+} & Partial<NoteData>;
+function NoteForm({ onSubmit, addTag, Tags, title = "", content = "", tagIds = [] }: NoteFormProps) {
+  const filterTag = Tags.filter(t => tagIds.includes(t.id)); //filters tags based on id
   const titleRef = useRef<HTMLInputElement>(null);
   const bodyRef = useRef<HTMLTextAreaElement>(null);
-  const [selectedTags, SetSelectedTags] = useState<Tag[]>([])
-
+  const [selectedTags, SetSelectedTags] = useState<Tag[]>(filterTag);
   const navigate = useNavigate();
   //saves the newly added note
   const saveNewNote = (e: React.SubmitEvent<HTMLFormElement>) => {
@@ -37,7 +37,7 @@ function NoteForm({ onSubmit, addTag, Tags }: NoteFormProps) {
               <Form.Label>
                 Title
               </Form.Label>
-              <Form.Control required ref={titleRef} />
+              <Form.Control required ref={titleRef} defaultValue={title} />
             </Form.Group>
           </Col>
 
@@ -69,7 +69,8 @@ function NoteForm({ onSubmit, addTag, Tags }: NoteFormProps) {
               </Form.Label>
               <Form.Control
                 as="textarea" required rows={14}
-                ref={bodyRef} />
+                ref={bodyRef}
+                defaultValue={content} />
             </Form.Group>
           </Col>
         </Row>

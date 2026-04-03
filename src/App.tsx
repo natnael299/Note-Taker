@@ -4,7 +4,9 @@ import NewNote from "./pages/NewNote"
 import { Container } from "react-bootstrap"
 import { useLocalStorage } from "./utils"
 import { useMemo } from "react"
-import NoteDetail from "./pages/NoteDetail"
+import Note from "./pages/Note"
+import { NoteDetail } from "./pages/NoteDetail"
+import Edit from "./pages/Edit"
 //type for a single note object
 export type NoteData = {
   id: string,
@@ -36,6 +38,26 @@ function App() {
     setNotes(prevNote => { return [...prevNote, data] });
   };
 
+  //handle new note creation
+  function onUpdateNote(id: string, { ...data }: NoteData) {
+    setNotes(prevN => {
+      return prevN.map(note => {
+        //override the note
+        if (note.id == id) { return { ...note, ...data } }
+        else { return note }
+      })
+    })
+  };
+
+  //handles deltetion
+  function onDeleteNote(id: string, { ...data }: NoteData) {
+    setNotes(prevN => {
+      return prevN.map(note => {
+        if (note.id !== id) { return note }
+      })
+    })
+  };
+
   //handle new tag creation
   function addTag(data: Tag) {
     setTags(prevNote => { return [...prevNote, data] })
@@ -48,9 +70,9 @@ function App() {
         {/* leads a wrongly written path to the home page */}
         <Route path="*" element={<Navigate to="/" />} />
         <Route path="/new" element={<NewNote onSubmit={onCreateNote} addTag={addTag} Tags={Tags} />} />
-        <Route path="/:id">
-          <Route index element={<NoteDetail />} />
-          <Route path="delete" element={<h1>Delete</h1>} />
+        <Route path="/:id" element={<NoteDetail notes={notesWT} />}>
+          <Route index element={<Note />} />
+          <Route path="edit" element={<Edit onSubmit={onUpdateNote} addTag={addTag} Tags={Tags} />} />
         </Route>
       </Routes>
     </Container >
