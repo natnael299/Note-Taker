@@ -5,14 +5,18 @@ import CreateableReactSelect from "react-select/creatable"
 import type { Tag, DetailedNoteData } from "../App"
 import NoteCard from "./components/NoteCard"
 import { Link } from "react-router"
+import EditTags from "./EditTags"
 type HomeProps = {
   notes: DetailedNoteData[]
   Tags: Tag[]
+  removeTag: (id: string) => void
+  updateTag: (id: string, value: string) => void
 }
 
-function Home({ notes, Tags }: HomeProps) {
+function Home({ notes, Tags, removeTag, updateTag }: HomeProps) {
   const [selectedTags, setSelectedTags] = useState<Tag[]>([])
   const [title, setTitle] = useState<string>("")
+  const [isEditTagGridOpen, setIsEditTagGridOpen] = useState<boolean>(false);
   const filteredNotes = useMemo(() => {
     return notes.filter(note => {
       return (title == "" || note.title.toLowerCase().includes(title.toLowerCase()))
@@ -31,9 +35,9 @@ function Home({ notes, Tags }: HomeProps) {
             <Link to="/new">
               <Button className="btn-primary">Create</Button>
             </Link>
-            <Link to="/update">
-              <Button className="btn-dark">Edit Tages</Button>
-            </Link>
+            <Button className="btn-dark" onClick={() => setIsEditTagGridOpen(true)}>
+              Edit Tages
+            </Button>
           </Stack>
         </Col>
       </Row>
@@ -70,6 +74,13 @@ function Home({ notes, Tags }: HomeProps) {
           </Col>
         ))}
       </Row>
+
+      <EditTags
+        show={isEditTagGridOpen}
+        hide={() => setIsEditTagGridOpen(false)}
+        Tags={Tags}
+        removeTag={removeTag}
+        updateTag={updateTag} />
     </>
   )
 }

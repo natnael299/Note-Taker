@@ -50,9 +50,9 @@ function App() {
   };
 
   //handles deltetion
-  function onDeleteNote(id: string, { ...data }: NoteData) {
+  function onDeleteNote(id: string) {
     setNotes(prevN => {
-      return prevN.map(note => {
+      return prevN.filter(note => {
         if (note.id !== id) { return note }
       })
     })
@@ -62,16 +62,30 @@ function App() {
   function addTag(data: Tag) {
     setTags(prevNote => { return [...prevNote, data] })
   }
+  //handle id deletion
+  function removeTag(id: string) {
+    setTags(prevTags => { return prevTags.filter(tag => tag.id !== id) });
+  }
+
+  //handle id update
+  function updateTag(id: string, value: string) {
+    setTags(prevTags => {
+      return prevTags.map(tag => {
+        if (tag.id === id) { return { ...tag, label: value }; }
+        else { return tag; }
+      })
+    });
+  }
 
   return (
     <Container className="my-4">
       <Routes>
-        <Route path="/" element={<Home notes={notesWT} Tags={Tags} />} />
+        <Route path="/" element={<Home notes={notesWT} Tags={Tags} removeTag={removeTag} updateTag={updateTag} />} />
         {/* leads a wrongly written path to the home page */}
         <Route path="*" element={<Navigate to="/" />} />
         <Route path="/new" element={<NewNote onSubmit={onCreateNote} addTag={addTag} Tags={Tags} />} />
         <Route path="/:id" element={<NoteDetail notes={notesWT} />}>
-          <Route index element={<Note />} />
+          <Route index element={<Note onDelete={onDeleteNote} />} />
           <Route path="edit" element={<Edit onSubmit={onUpdateNote} addTag={addTag} Tags={Tags} />} />
         </Route>
       </Routes>
